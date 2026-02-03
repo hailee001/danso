@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="TaiLieuThamKhao - Hệ thống chia sẻ kiến thức Web & AI 2026">
     <meta name="author" content="Trung Hai Admin">
-    <title>TaiLieuThamKhao v4.0 - Hệ Thống Tri Thức Đa Chiều 2026</title>
+    <title>TaiLieuThamKhao v5.0 - Hệ Thống Tri Thức Đa Chiều 2026</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -56,7 +56,10 @@
             /* Z-Index Layers */
             --z-cursor: 999999;
             --z-gatekeeper: 100000;
+            --z-registration: 95000; /* UPDATE 1: Layer đăng ký */
             --z-dragon: 90000;
+            --z-pet: 88000; /* UPDATE 2: Layer Pet */
+            --z-game: 89000; /* UPDATE 3: Layer Game Center */
             --z-modal: 80000;
             --z-toast: 85000;
             --z-header: 1000;
@@ -343,6 +346,382 @@
             filter: drop-shadow(0 0 50px var(--primary-color));
             z-index: 2;
         }
+
+        /* =======================================================================
+           UPDATE 1 CSS: MÀN HÌNH ĐĂNG KÝ (REGISTRATION SCREEN)
+           =======================================================================
+        */
+        #registration-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(15px);
+            z-index: var(--z-registration);
+            display: none; /* Mặc định ẩn */
+            align-items: center;
+            justify-content: center;
+        }
+
+        .reg-box {
+            background: var(--bg-card);
+            padding: 50px;
+            border-radius: 30px;
+            width: 450px;
+            text-align: center;
+            border: 2px solid var(--primary-color);
+            box-shadow: 0 0 50px rgba(255, 71, 87, 0.3);
+            animation: zoomInReg 0.5s ease-out;
+        }
+
+        @keyframes zoomInReg {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .reg-title {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--primary-color);
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .reg-subtitle {
+            color: var(--text-sub);
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+
+        .reg-input {
+            width: 100%;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            background: var(--bg-body);
+            border: 1px solid var(--text-sub);
+            border-radius: 10px;
+            color: var(--text-main);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+        }
+
+        .reg-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        .reg-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary-color);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .reg-btn:hover {
+            background: var(--primary-hover);
+            transform: scale(1.05);
+        }
+
+        /* =======================================================================
+           UPDATE 2 CSS: HỆ THỐNG LINH THÚ AI (PET SYSTEM)
+           =======================================================================
+        */
+        #ai-pet-widget {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 120px;
+            height: 120px;
+            z-index: var(--z-pet);
+            pointer-events: auto; /* Để click vào pet */
+            display: none; /* Hiện sau khi đăng nhập */
+            transition: transform 0.3s;
+        }
+
+        .pet-body {
+            font-size: 4rem;
+            text-align: center;
+            filter: drop-shadow(0 10px 10px rgba(0,0,0,0.5));
+            animation: petFloat 3s infinite ease-in-out;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .pet-status-bubble {
+            position: absolute;
+            top: -30px;
+            right: -10px;
+            background: #fff;
+            color: #333;
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            width: 150px; /* Thêm width để text chat không bị vỡ */
+            z-index: 10;
+        }
+
+        .pet-status-bubble.show {
+            opacity: 1;
+        }
+
+        .pet-zzz {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            font-size: 1.5rem;
+            color: #a4b0be;
+            font-weight: 900;
+            opacity: 0;
+        }
+
+        /* NEW CSS: Pet XP Bar */
+        .pet-xp-container {
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 6px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .pet-xp-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f1c40f, #e67e22);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .pet-level-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--primary-color);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: bold;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #fff;
+        }
+
+        /* Animation cho Pet */
+        @keyframes petFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes petSleep {
+            0% { transform: translateY(0) scale(1); opacity: 0; }
+            50% { transform: translateY(-20px) scale(1.2); opacity: 1; }
+            100% { transform: translateY(-40px) scale(1.5); opacity: 0; }
+        }
+
+        .sleeping .pet-zzz {
+            animation: petSleep 2s infinite;
+        }
+
+        .pet-body:hover {
+            transform: scale(1.1);
+        }
+
+        /* =======================================================================
+           UPDATE 3 CSS: GAMIFICATION (GAME CENTER)
+           =======================================================================
+        */
+        #game-center-btn {
+            position: fixed;
+            bottom: 140px; /* Nằm trên Chatbot */
+            right: 50px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #f1c40f, #e67e22);
+            border-radius: 50%;
+            display: none; /* Hiện sau khi đăng nhập */
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(243, 156, 18, 0.4);
+            z-index: 5000;
+            transition: transform 0.3s;
+            animation: pulseGameBtn 2s infinite;
+        }
+
+        @keyframes pulseGameBtn {
+            0% { box-shadow: 0 0 0 0 rgba(241, 196, 15, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(241, 196, 15, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(241, 196, 15, 0); }
+        }
+
+        #game-center-btn:hover { transform: scale(1.1) rotate(15deg); }
+
+        #game-center-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: var(--z-game);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .game-panel {
+            background: var(--bg-card);
+            width: 800px;
+            max-height: 80vh;
+            border-radius: 30px;
+            padding: 40px;
+            display: grid;
+            grid-template-columns: 250px 1fr; /* Menu trái - Nội dung phải */
+            gap: 30px;
+            border: 2px solid var(--accent-color);
+            box-shadow: 0 0 50px rgba(255, 165, 2, 0.3);
+            overflow: hidden;
+        }
+
+        .game-menu {
+            border-right: 1px solid var(--secondary-light);
+            padding-right: 20px;
+        }
+
+        .game-menu h3 {
+            color: var(--accent-color);
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 30px;
+            font-size: 1.5rem;
+        }
+
+        .game-menu-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .game-menu-item:hover, .game-menu-item.active {
+            background: var(--accent-color);
+            color: #fff;
+        }
+
+        .game-content {
+            padding-left: 10px;
+            overflow-y: auto;
+        }
+
+        .game-tab { display: none; animation: fadeIn 0.3s; }
+        .game-tab.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Profile Tab Styles */
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            background: var(--bg-body);
+            padding: 20px;
+            border-radius: 20px;
+        }
+
+        .profile-avatar {
+            width: 80px; height: 80px;
+            background: var(--secondary-light);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem;
+        }
+
+        .profile-stats { flex: 1; }
+        .profile-stats h2 { margin-bottom: 5px; color: var(--primary-color); }
+        
+        .badge-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        
+        .badge-item {
+            background: var(--bg-body);
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid var(--secondary-light);
+            opacity: 0.5; /* Chưa mở khóa */
+            filter: grayscale(1);
+        }
+        
+        .badge-item.unlocked {
+            opacity: 1;
+            filter: grayscale(0);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        /* Leaderboard Tab Styles */
+        .leader-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            border-bottom: 1px solid var(--secondary-light);
+            align-items: center;
+        }
+        
+        .leader-row:nth-child(1) { color: #f1c40f; font-weight: bold; font-size: 1.2rem; } /* Top 1 */
+        .leader-row:nth-child(2) { color: #bdc3c7; font-weight: bold; } /* Top 2 */
+        .leader-row:nth-child(3) { color: #e67e22; font-weight: bold; } /* Top 3 */
+
+        /* Quest Tab Styles */
+        .quest-item {
+            background: var(--bg-body);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 5px solid var(--secondary-light);
+        }
+        
+        .quest-item.completed {
+            border-left-color: #2ed573;
+            background: rgba(46, 213, 115, 0.1);
+        }
+        
+        .btn-claim {
+            padding: 8px 15px;
+            background: #2ed573;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            display: none;
+        }
+        
+        .quest-item.completed .btn-claim { display: block; }
+        .quest-item.claimed .btn-claim { background: #57606f; pointer-events: none; content: "Đã nhận"; }
 
         /* =======================================================================
            PHẦN 8: GIAO DIỆN WEB CHÍNH (HEADER & MAIN)
@@ -756,6 +1135,78 @@
         </svg>
     </div>
 
+    <div id="registration-screen">
+        <div class="reg-box">
+            <h2 class="reg-title">XÁC MINH DANH TÍNH</h2>
+            <p class="reg-subtitle">Vui lòng đăng ký để mở khóa kho tàng tri thức.</p>
+            
+            <input type="text" id="reg-name" class="reg-input" placeholder="Họ và Tên của bạn">
+            <input type="email" id="reg-email" class="reg-input" placeholder="Email liên hệ">
+            
+            <button class="reg-btn" onclick="submitRegistration()">THAM GIA NGAY</button>
+            <p id="reg-status" style="margin-top:15px; color:var(--primary-color); font-size:0.9rem;"></p>
+        </div>
+    </div>
+
+    <div id="ai-pet-widget">
+        <div class="pet-status-bubble" id="pet-bubble">Zzz...</div>
+        <div class="pet-zzz">Zzz...</div>
+        <div class="pet-body" id="pet-visual" onclick="interactWithPet()">🥚</div>
+        <div class="pet-xp-container">
+            <div class="pet-xp-bar-fill" id="pet-xp-fill"></div>
+        </div>
+        <div class="pet-level-badge" id="pet-lvl">1</div>
+    </div>
+
+    <div id="game-center-btn" onclick="openGameCenter()">🏆</div>
+
+    <div id="game-center-modal">
+        <div class="game-panel">
+            <div class="game-menu">
+                <h3>GAME CENTER</h3>
+                <div class="game-menu-item active" onclick="switchGameTab('profile')">
+                    <i class="fas fa-id-card"></i> Hồ Sơ
+                </div>
+                <div class="game-menu-item" onclick="switchGameTab('leaderboard')">
+                    <i class="fas fa-trophy"></i> Bảng Xếp Hạng
+                </div>
+                <div class="game-menu-item" onclick="switchGameTab('quests')">
+                    <i class="fas fa-scroll"></i> Nhiệm Vụ Ngày
+                </div>
+                <div class="game-menu-item" onclick="closeGameCenter()" style="margin-top: 50px; color: var(--primary-color);">
+                    <i class="fas fa-times"></i> Đóng
+                </div>
+            </div>
+            <div class="game-content">
+                <div id="tab-profile" class="game-tab active">
+                    <div class="profile-header">
+                        <div class="profile-avatar"><i class="fas fa-user-astronaut"></i></div>
+                        <div class="profile-stats">
+                            <h2 id="profile-name">Khách</h2>
+                            <p>Level Pet: <span id="profile-pet-lvl">1</span></p>
+                            <p>Tổng XP: <span id="profile-xp">0</span></p>
+                        </div>
+                    </div>
+                    <h4>HUY HIỆU ĐÃ ĐẠT</h4>
+                    <div class="badge-grid" id="profile-badges">
+                        </div>
+                </div>
+
+                <div id="tab-leaderboard" class="game-tab">
+                    <h4 style="margin-bottom:20px;">TOP CAO THỦ WEBSITE</h4>
+                    <div id="leaderboard-list">
+                        </div>
+                </div>
+
+                <div id="tab-quests" class="game-tab">
+                    <h4 style="margin-bottom:20px;">NHIỆM VỤ HÔM NAY</h4>
+                    <div id="quest-list">
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="main-content-area">
         <header>
             <div class="header-logo">
@@ -868,6 +1319,8 @@
         const mainContent = document.getElementById('main-content-area');
         const cursorHead = document.querySelector('.cursor-head');
         
+        let globalUserName = "Khách"; // Biến lưu tên người dùng cho Gamification
+
         // Cấu hình Canvas
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
@@ -883,6 +1336,9 @@
             if (Math.random() > 0.75) {
                 createMouseFire(e.clientX, e.clientY);
             }
+            
+            // UPDATE 2: Đánh thức Pet khi di chuyển
+            resetPetIdleTimer();
         });
 
         document.addEventListener('mousedown', function() {
@@ -908,9 +1364,10 @@
 
         // --- 3. LOGIC THÀNH TỰU (ACHIEVEMENTS) ---
         const userAchievements = {
-            login: { unlocked: false, title: "TÂN BINH 2026", desc: "Chào mừng gia nhập hệ thống tri thức!" },
-            read_web: { unlocked: false, title: "KIẾN TRÚC SƯ", desc: "Đã tìm hiểu quy trình làm Web." },
-            read_ai: { unlocked: false, title: "PHÙ THỦY AI", desc: "Đã khám phá sức mạnh AI." }
+            login: { unlocked: false, title: "TÂN BINH 2026", desc: "Chào mừng gia nhập hệ thống tri thức!", icon: "🌟" },
+            read_web: { unlocked: false, title: "KIẾN TRÚC SƯ", desc: "Đã tìm hiểu quy trình làm Web.", icon: "🏗️" },
+            read_ai: { unlocked: false, title: "PHÙ THỦY AI", desc: "Đã khám phá sức mạnh AI.", icon: "🤖" },
+            pet_evo: { unlocked: false, title: "NGƯỜI HUẤN LUYỆN", desc: "Linh thú đã tiến hóa lần đầu!", icon: "🥚" }
         };
 
         function triggerAchievement(key) {
@@ -1035,13 +1492,57 @@
                 if (currentX > window.innerWidth) {
                     clearInterval(flyOutTimer);
                     dragonLayer.style.display = 'none';
-                    revealWebsite();
+                    // UPDATE 1: Thay đổi logic, không hiện web ngay mà hiện form đăng ký
+                    revealRegistration();
                 }
             }, 16);
         }
 
+        // UPDATE 1 & 3: LOGIC ĐĂNG KÝ VÀ TELEGRAM BOT
+        const BOT_TOKEN = "8247031947:AAHcOmle1n0X9L9Elyjy-rdJRBz2COJ0eN4";
+        const MY_CHAT_ID = "7829265174"; 
+
+        function revealRegistration() {
+            document.getElementById('registration-screen').style.display = 'flex';
+        }
+
+        function submitRegistration() {
+            const name = document.getElementById('reg-name').value;
+            const email = document.getElementById('reg-email').value;
+            const statusMsg = document.getElementById('reg-status');
+
+            if (!name || !email) {
+                statusMsg.innerText = "Vui lòng nhập đầy đủ thông tin!";
+                return;
+            }
+
+            statusMsg.innerText = "Đang xử lý dữ liệu...";
+            
+            // Lưu tên người dùng cho Game Center
+            globalUserName = name;
+            document.getElementById('profile-name').innerText = globalUserName;
+
+            // Gửi thông báo Telegram (UPDATE 3)
+            const message = `🚨 CÓ BIẾN! NGƯỜI DÙNG MỚI:\n👤 Tên: ${name}\n📧 Email: ${email}\n⏰ Thời gian: ${new Date().toLocaleString()}`;
+            
+            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${MY_CHAT_ID}&text=${encodeURIComponent(message)}`)
+                .then(response => {
+                    console.log("Telegram report sent");
+                })
+                .catch(err => {
+                    console.log("Telegram config needed (Add Chat ID)");
+                })
+                .finally(() => {
+                    // Ẩn form và hiện web chính
+                    document.getElementById('registration-screen').style.display = 'none';
+                    revealWebsite();
+                });
+        }
+
         function revealWebsite() {
             mainContent.style.display = 'block';
+            document.getElementById('game-center-btn').style.display = 'flex'; // Hiện nút Game
+
             // Delay nhẹ để transition opacity hoạt động
             setTimeout(() => {
                 mainContent.style.opacity = '1';
@@ -1051,7 +1552,153 @@
             // Bắt đầu các hệ thống phụ
             startClock();
             startWeatherSystem();
+            initPetSystem(); // UPDATE 2: Khởi động Pet
         }
+
+        // --- UPDATE 2 + NEW (Suggestion 1): LOGIC PET EVOLUTION & CHAT ---
+        let petState = {
+            hunger: 100, // 100 là no
+            mood: 100,   // 100 là vui
+            isSleeping: false,
+            xp: 0,
+            level: 1,
+            evolutionStage: 0 // 0: Egg, 1: Baby, 2: Adult, 3: Ancient
+        };
+        
+        // Mảng hình ảnh tiến hóa (Emoji)
+        const evolutionIcons = ["🥚", "🐉", "🐲", "🦖"];
+        
+        // Mảng kiến thức ngẫu nhiên
+        const knowledgeFacts = [
+            "HTML5 có hơn 100 thẻ khác nhau đó!",
+            "CSS Grid giúp chia bố cục web siêu nhanh.",
+            "AI đang thay đổi cách chúng ta code.",
+            "Javascript là ngôn ngữ phổ biến nhất thế giới.",
+            "Bạn có biết? Web đầu tiên ra đời năm 1991.",
+            "Hãy uống nước đi, code lâu mỏi mắt lắm!",
+            "Flexbox là cứu tinh của căn giữa.",
+            "ReactJS được tạo ra bởi Facebook."
+        ];
+
+        let idleTime = 0;
+        let petInterval;
+
+        function initPetSystem() {
+            document.getElementById('ai-pet-widget').style.display = 'block';
+            
+            // Loop kiểm tra trạng thái mỗi giây
+            petInterval = setInterval(() => {
+                idleTime++;
+                petState.hunger -= 0.5; // Đói dần theo thời gian
+                
+                updatePetVisuals();
+
+                // Logic ngủ (sau 5 giây không làm gì)
+                if (idleTime > 5 && !petState.isSleeping) {
+                    petState.isSleeping = true;
+                    document.getElementById('ai-pet-widget').classList.add('sleeping');
+                    updatePetBubble("Zzz...");
+                }
+
+                // Cảnh báo đói
+                if (petState.hunger < 30 && !petState.isSleeping) {
+                    updatePetBubble("Đói quá! 🍖");
+                }
+                
+                // NEW: Pet nói chuyện ngẫu nhiên (10% cơ hội mỗi giây nếu đang thức)
+                if (!petState.isSleeping && Math.random() < 0.1) {
+                    const randomFact = knowledgeFacts[Math.floor(Math.random() * knowledgeFacts.length)];
+                    updatePetBubble(randomFact);
+                    setTimeout(() => updatePetBubble(""), 3000); // Tắt sau 3s
+                }
+
+            }, 1000);
+        }
+
+        function resetPetIdleTimer() {
+            idleTime = 0;
+            if (petState.isSleeping) {
+                petState.isSleeping = false;
+                document.getElementById('ai-pet-widget').classList.remove('sleeping');
+                updatePetBubble("Chào chủ nhân! 👋");
+                setTimeout(() => updatePetBubble(""), 2000);
+            }
+        }
+
+        function interactWithPet() {
+            // Click vào pet để cho ăn và làm vui + Tăng XP
+            petState.hunger = Math.min(100, petState.hunger + 20);
+            petState.mood = 100;
+            
+            // Cộng XP
+            gainPetXP(15);
+            
+            const petVisual = document.getElementById('pet-visual');
+            // Giữ nguyên icon hiện tại khi ăn, chỉ đổi biểu cảm nếu cần
+            updatePetBubble("Ngon quá! (+15 XP) ❤️");
+            
+            setTimeout(() => {
+                updatePetBubble("");
+            }, 1500);
+        }
+        
+        // NEW FUNCTION: Tăng XP và Tiến hóa
+        function gainPetXP(amount) {
+            petState.xp += amount;
+            
+            // Giả lập Max XP mỗi cấp là 100
+            let maxXP = 100;
+            let percent = (petState.xp / maxXP) * 100;
+            
+            if (percent >= 100) {
+                petState.xp = 0; // Reset XP bar
+                petState.level++;
+                percent = 0;
+                
+                // Tiến hóa nếu đạt mốc level (Vd: Lv 2, Lv 5, Lv 10)
+                checkEvolution();
+                updatePetBubble("LEVEL UP! 🎉");
+            }
+            
+            // Cập nhật UI
+            document.getElementById('pet-xp-fill').style.width = percent + "%";
+            document.getElementById('pet-lvl').innerText = petState.level;
+            
+            // Sync với Profile Game Center
+            document.getElementById('profile-pet-lvl').innerText = petState.level;
+            document.getElementById('profile-xp').innerText = petState.level * 100 + petState.xp;
+        }
+        
+        function checkEvolution() {
+            let oldStage = petState.evolutionStage;
+            if (petState.level >= 2) petState.evolutionStage = 1; // Baby
+            if (petState.level >= 5) petState.evolutionStage = 2; // Adult
+            if (petState.level >= 10) petState.evolutionStage = 3; // Ancient
+            
+            if (petState.evolutionStage > oldStage) {
+                document.getElementById('pet-visual').innerText = evolutionIcons[petState.evolutionStage];
+                triggerAchievement('pet_evo');
+                updatePetBubble("TIẾN HÓA! 🔥");
+            }
+        }
+
+        function updatePetVisuals() {
+            // Có thể mở rộng để thay đổi icon dựa trên mood/hunger
+            const petVisual = document.getElementById('pet-visual');
+            if(petState.hunger < 20) petVisual.style.filter = "grayscale(100%)"; // Đói thì xám xịt
+            else petVisual.style.filter = "drop-shadow(0 10px 10px rgba(0,0,0,0.5))";
+        }
+
+        function updatePetBubble(text) {
+            const bubble = document.getElementById('pet-bubble');
+            if (text) {
+                bubble.innerText = text;
+                bubble.classList.add('show');
+            } else {
+                bubble.classList.remove('show');
+            }
+        }
+
 
         // --- 5. HỆ THỐNG MODAL NỘI DUNG ---
         function openDetails(contentType) {
@@ -1061,6 +1708,8 @@
 
             if (contentType === 'web') {
                 triggerAchievement('read_web');
+                gainPetXP(50); // Đọc bài được nhiều XP
+                completeQuest(0); // Hoàn thành quest đầu tiên
                 contentHTML += `
                     <h2 style="color:var(--primary-color); font-size:3rem; margin-bottom:40px; font-family:'Orbitron';">5 BƯỚC LÀM WEB CHO HỌC SINH</h2>
                     <div class="instruction-step">
@@ -1086,6 +1735,7 @@
                 `;
             } else if (contentType === 'ai') {
                 triggerAchievement('read_ai');
+                gainPetXP(50);
                 contentHTML += `
                     <h2 style="color:var(--primary-color); font-size:3rem; margin-bottom:20px; font-family:'Orbitron';">CÁCH ÁP DỤNG AI VÀO WEBSITE</h2>
                     <div style="border:3px solid var(--primary-color); padding:20px; border-radius:20px; margin-bottom:40px; color:var(--primary-color); font-weight:800; font-size:1.2rem;">
@@ -1119,7 +1769,7 @@
             document.getElementById('details-modal').style.display = 'none';
             document.body.style.overflow = 'auto'; // Mở lại cuộn trang
         }
-
+        
         // --- 6. CÁC TIỆN ÍCH HỆ THỐNG KHÁC ---
         function startClock() {
             setInterval(() => {
@@ -1167,6 +1817,113 @@
         function resetWeatherSystem() {
             const existingParticles = document.querySelectorAll('.weather-particle-effect');
             existingParticles.forEach(p => p.remove());
+        }
+        
+        // --- NEW (Suggestion 3): GAMIFICATION LOGIC ---
+        
+        // Danh sách Quest giả lập
+        const dailyQuests = [
+            { id: 0, title: "Đọc 1 bài viết về Web", reward: 100, completed: false, claimed: false },
+            { id: 1, title: "Cho rồng ăn 5 lần", reward: 50, completed: false, claimed: false },
+            { id: 2, title: "Ghé thăm Web 5 phút", reward: 80, completed: false, claimed: false }
+        ];
+
+        function openGameCenter() {
+            document.getElementById('game-center-modal').style.display = 'flex';
+            renderProfileBadges();
+            renderLeaderboard();
+            renderQuests();
+        }
+
+        function closeGameCenter() {
+            document.getElementById('game-center-modal').style.display = 'none';
+        }
+
+        function switchGameTab(tabName) {
+            // Ẩn tất cả tab
+            document.querySelectorAll('.game-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.game-menu-item').forEach(m => m.classList.remove('active'));
+            
+            // Hiện tab được chọn
+            document.getElementById('tab-' + tabName).classList.add('active');
+            
+            // Highlight menu item (Logic đơn giản tìm theo index hoặc text, ở đây fix cứng để demo)
+            // Trong thực tế sẽ loop qua để set active class cho menu item
+        }
+
+        function renderProfileBadges() {
+            const container = document.getElementById('profile-badges');
+            container.innerHTML = "";
+            for (const key in userAchievements) {
+                const ach = userAchievements[key];
+                const div = document.createElement('div');
+                div.className = `badge-item ${ach.unlocked ? 'unlocked' : ''}`;
+                div.innerHTML = `
+                    <div style="font-size:2rem; margin-bottom:5px;">${ach.icon || '🏅'}</div>
+                    <div style="font-weight:bold; font-size:0.8rem;">${ach.title}</div>
+                `;
+                container.appendChild(div);
+            }
+        }
+
+        function renderLeaderboard() {
+            const container = document.getElementById('leaderboard-list');
+            // Dữ liệu giả lập
+            const fakeData = [
+                { name: "ProCoder99", point: 9999 },
+                { name: "DragonMaster", point: 8500 },
+                { name: "AI_Wizard", point: 7200 },
+                { name: globalUserName, point: petState.level * 100 + petState.xp } // User thật
+            ];
+            
+            // Sắp xếp
+            fakeData.sort((a,b) => b.point - a.point);
+            
+            container.innerHTML = "";
+            fakeData.forEach((u, index) => {
+                const div = document.createElement('div');
+                div.className = "leader-row";
+                div.innerHTML = `
+                    <span>#${index + 1} ${u.name}</span>
+                    <span>${u.point} XP</span>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function renderQuests() {
+            const container = document.getElementById('quest-list');
+            container.innerHTML = "";
+            dailyQuests.forEach(q => {
+                const div = document.createElement('div');
+                div.className = `quest-item ${q.completed ? 'completed' : ''} ${q.claimed ? 'claimed' : ''}`;
+                div.innerHTML = `
+                    <div>
+                        <div style="font-weight:bold;">${q.title}</div>
+                        <div style="font-size:0.8rem; color:var(--text-sub);">Phần thưởng: ${q.reward} XP</div>
+                    </div>
+                    <button class="btn-claim" onclick="claimReward(${q.id})">NHẬN</button>
+                `;
+                container.appendChild(div);
+            });
+        }
+        
+        function completeQuest(id) {
+            if (!dailyQuests[id].completed) {
+                dailyQuests[id].completed = true;
+                // Nếu đang mở bảng thì render lại
+                if (document.getElementById('game-center-modal').style.display === 'flex') {
+                    renderQuests();
+                }
+            }
+        }
+        
+        function claimReward(id) {
+            if (dailyQuests[id].completed && !dailyQuests[id].claimed) {
+                dailyQuests[id].claimed = true;
+                gainPetXP(dailyQuests[id].reward);
+                renderQuests();
+            }
         }
 
         // Responsive Canvas Resize
